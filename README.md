@@ -1,0 +1,1 @@
+This STM32 project reads temperature using a 10k NTC thermistor and the ADS1246 24-bit ADC. The thermistor is connected in a voltage divider, and the STM32 reads the voltage via SPI, converts it to resistance, and then calculates the temperature using the Beta equation. Results are sent over UART.
