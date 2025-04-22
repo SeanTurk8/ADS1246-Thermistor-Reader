@@ -7,15 +7,15 @@ Connect your STM32 (e.g., Nucleo-F401RE) to your computer via USB or an external
 
 ### 2. Sensor Initialization  
 The ADC is prepared with these commands:
-- ADS1246_Reset()` — Toggles RESET pin (PB7) low → high to restart the ADS1246.  
-- ADS1246_Wakeup()` — Sends `0x00` to wake from power-down.  
-- ADS1246_DisableRDATAC()` — Sends `0x16` to stop continuous read so we can write config settings.
+- `ADS1246_Reset()` — Toggles RESET pin (PB7) low → high to restart the ADS1246.  
+- `ADS1246_Wakeup()` — Sends `0x00` to wake from power-down.  
+- `ADS1246_DisableRDATAC()` — Sends `0x16` to stop continuous read so we can write config settings.
 
 ### 3. Configure the ADS1246  
 These register writes configure the input and behavior:
-- ADS1246_WriteRegister(0x00, 0x08);` → Use AIN0 as input, AINCOM as GND.  
-- ADS1246_WriteRegister(0x01, 0x04);` → Enable internal bias voltage on AIN0.  
-- ADS1246_WriteRegister(0x02, 0x00);` → Set gain = 1 and lowest data rate for accurate, slow readings.
+- `ADS1246_WriteRegister(0x00, 0x08);` → Use AIN0 as input, AINCOM as GND.  
+- `ADS1246_WriteRegister(0x01, 0x04);` → Enable internal bias voltage on AIN0.  
+- `ADS1246_WriteRegister(0x02, 0x00);` → Set gain = 1 and lowest data rate for accurate, slow readings.
 
 ### 4. Enable Continuous Reading  
 After configuration, `ADS1246_EnableRDATAC()` sends `0x14` to resume continuous data output.
@@ -33,12 +33,12 @@ Once DRDY is LOW:
 uint32_t raw = ADS1246_Read24bit();
 ```
 Then the system does the following:
-- float avg_voltage = ADS1246_ConvertToVoltage(raw, 3.3);`  
-- float adjusted_voltage = avg_voltage * 1.34f;` → Scaling factor to improve accuracy  
-- float resistance = calculate_resistance(adjusted_voltage);`  
-  Uses: `R_therm = R_fixed * Vout / (Vin - Vout)`  
-- float temperature = calculate_temperature(resistance);`  
-  Applies Beta Equation: `1/T = 1/T0 + ln(R/R0)/β`
+- `float avg_voltage = ADS1246_ConvertToVoltage(raw, 3.3);`  
+- `float adjusted_voltage = avg_voltage * 1.34f;` → Scaling factor to improve accuracy  
+- `float resistance = calculate_resistance(adjusted_voltage);`  
+  → Uses: `R_therm = R_fixed * Vout / (Vin - Vout)`  
+- `float temperature = calculate_temperature(resistance);`  
+  → Applies Beta Equation: `1/T = 1/T0 + ln(R/R0)/β`
 
 ### 7. Print Results Over UART  
 The following values are sent over UART and can be viewed using PuTTY, Arduino Serial Monitor, etc.:
